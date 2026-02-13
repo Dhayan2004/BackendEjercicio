@@ -1,35 +1,29 @@
-import { Request, Response, NextFunction } from "express";
+import express from "express";
+import cors from "cors"; 
+import rateLimit from "express-rate-limit"; 
+import entryRoutes from "../routes/routes";
 
-export const validateEntry = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { content } = req.body;
+const app = express();
 
-  if (!content) {
-    return res.status(400).json({ error: "El contenido es obligatorio" });
-  }
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, 
+  max: 30, 
+  message: { error: "Demasiadas peticiones. No intentes saturar la base de datos." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-  if (typeof content !== "string" || content.length > 10) {
-    return res.status(400).json({ 
-      error: "El contenido debe ser texto y no mayor a 10 caracteres" 
-    });
-  }
+app.use(cors()); 
+app.use(express.json());
+app.use(limiter); 
 
-  const pathTraversalPattern = /(\.\.\/|\.\.\\|\/|\\)/;
-  if (pathTraversalPattern.test(content)) {
-    return res.status(403).json({ 
-      error: "Intento de acceso ilegal a directorios detectado (Path Traversal)" 
-    });
-  }
+app.use("/entries", entryRoutes);
 
-  const safeRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$/;
-  if (!safeRegex.test(content)) {
-    return res.status(400).json({ 
-      error: "No se permiten caracteres especiales por seguridad" 
-    });
-  }
+app.get("/", (req, res) => {
+  res.send("API de Dhayan funcionando y protegida");
+});
 
-  next();
-};
+const PORT = 3001; 
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});

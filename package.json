@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
-  "build": "prisma generate && tsc",
-  "start": "ts-node src/index.ts",
-  "postinstall": "prisma generate"
-},
+    "build": "prisma generate && tsc",
+    "start": "ts-node src/index.ts",
+    "postinstall": "prisma generate"
+  },
   "keywords": [],
   "author": "Dhayan",
   "license": "ISC",
