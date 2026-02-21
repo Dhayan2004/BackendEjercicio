@@ -13,7 +13,7 @@ const postLimiter = rateLimit({
   legacyHeaders: false, 
 });
 
-app.use(cors()); 
+app.use(cors({ origin: ["https://front-ejercicio-villa-m7fci0r08-dhayan2004s-projects.vercel.app", "https://front-ejercicio-villa-git-main-dhayan2004s-projects.vercel.app"] })); 
 app.use(express.json());
 
 app.use("/entries", (req, res, next) => {
